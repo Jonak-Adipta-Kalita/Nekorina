@@ -271,6 +271,10 @@ export default function Clock() {
 
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-[#262728] font-['Barlow',sans-serif]">
+			<p className="text-lg text-gray-200 text-center mb-5">
+				Currently only set for Archita 	&lsaquo;&minus;&rsaquo; Jonak ;&minus;;
+			</p>
+
 			<ClockSVG time={time} rot={rot} />
 
 			<div className="flex flex-wrap mt-8">
@@ -290,9 +294,10 @@ export default function Clock() {
 				<input
 					className="px-4 py-2 w-64 rounded-xl bg-white text-slate-700 placeholder-slate-400 border border-slate-300 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 hover:border-slate-400 shadow-sm"
 					value={message} onChange={(e) => setMessage(e.target.value!)}
+					placeholder="Write your Message!"
 				/>
 				<button
-					className="px-5 py-2 rounded-xl bg-indigo-600 text-white font-medium transition-all duration-200 hover:bg-indigo-500 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-lg shadow-indigo-600/20"
+					className="px-5 py-2 rounded-xl bg-[#EA3F3F] text-white font-medium transition-all duration-200 hover:bg-indigo-500 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-lg shadow-indigo-600/20"
 					onClick={() => {
 						changeTime({ message: message, time: time.hours })
 						alert("sent!");
