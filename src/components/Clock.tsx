@@ -76,37 +76,39 @@ const Clock = ({ user }: { user: string }) => {
 				</p>
 			</div>
 
-			<div className="flex space-x-10 mt-5 md:mt-10">
-				<div className="flex flex-wrap mt-8">
-					<Control
-						label={"hours"}
-						value={time["hours"]}
-						onIncrement={() => update("hours", "+")}
-						onDecrement={() => update("hours", "-")}
-					/>
+			{user === "Jonak" || user === "Archita" ? (
+				<div className="flex space-x-10 mt-5 md:mt-10">
+					<div className="flex flex-wrap mt-8">
+						<Control
+							label={"hours"}
+							value={time["hours"]}
+							onIncrement={() => update("hours", "+")}
+							onDecrement={() => update("hours", "-")}
+						/>
+					</div>
+					<div className="flex items-center justify-center md:flex-row flex-col mt-5 space-y-5 md:space-y-0 md:space-x-10">
+						<input
+							className="input"
+							value={message} onChange={(e) => setMessage(e.target.value!)}
+							placeholder="Write your New Message!"
+						/>
+						<button
+							className="button"
+							onClick={() => {
+								changeTime({
+									message: message,
+									time: time.hours,
+									user: user,
+									timestamp: new Date().toISOString()
+								})
+								alert("Your Message is Sent!");
+							}}
+						>
+							Change Time
+						</button>
+					</div>
 				</div>
-				<div className="flex items-center justify-center md:flex-row flex-col mt-5 space-y-5 md:space-y-0 md:space-x-10">
-					<input
-						className="input"
-						value={message} onChange={(e) => setMessage(e.target.value!)}
-						placeholder="Write your New Message!"
-					/>
-					<button
-						className="button"
-						onClick={() => {
-							changeTime({
-								message: message,
-								time: time.hours,
-								user: user,
-								timestamp: new Date().toISOString()
-							})
-							alert("Your Message is Sent!");
-						}}
-					>
-						Change Time
-					</button>
-				</div>
-			</div>
+			) : <div></div>}
 		</div >
 	);
 }
