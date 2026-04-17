@@ -7,7 +7,9 @@ from discord import app_commands
 from src.bot import DiscordBot
 
 
-def authenticate(user: str) -> (bool, str, bool):
+def authenticate(inter: discord.Interaction) -> (bool, str, bool):
+    user = str(inter.user.id)
+
     view_allowed = False
     name = ""
     edit_allowed = False
@@ -34,6 +36,9 @@ class Commands(commands.Cog):
     def __init__(self, bot: DiscordBot):
         self.bot = bot
 
+        self.messages_ref = self.bot.db.collection("Messages")
+        self.latest_message_ref = self.messages_ref.document("latest")
+
     @app_commands.command(name="update", description="Update the message")
     @app_commands.describe(
         time="Set the Time of the Clock",
@@ -48,20 +53,36 @@ class Commands(commands.Cog):
         time: int,
         message: str,
     ):
-        view_allowed, name, edit_allowed = authenticate(str(inter.user.id))
+        view_allowed, name, edit_allowed = authenticate(inter)
 
         if not view_allowed:
             return await inter.response.send_message("Hey, Its None of your Business!")
+
+        # TODO: Later
 
     @app_commands.command(name="list", description="List the message(s)")
     @app_commands.describe(all="Whether to show the whole List, or only the Latest")
     async def get_messages(
         self, inter: discord.Interaction, all: Optional[bool] = None
     ):
-        view_allowed, name, edit_allowed = authenticate(str(inter.user.id))
+        view_allowed, name, edit_allowed = authenticate(inter)
 
         if not view_allowed:
             return await inter.response.send_message("Hey, Its None of your Business!")
+
+        if bool(all):
+            snapshot = self.messages_ref.stream()
+            messages = ([{"id": doc.id, **doc.to_dict()} for doc in snapshot])
+
+            # TODO
+        else:
+            latest_message = self.latest_message_ref.get()
+            if latest_message.exists:
+                msg = latest_message.to_dict()
+
+                # TODO
+            else:
+                return await inter.response.send_message("There are no messages, go to the website!")
 
 
 async def setup(bot: DiscordBot):

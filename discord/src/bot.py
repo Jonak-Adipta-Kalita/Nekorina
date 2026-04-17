@@ -16,30 +16,28 @@ class DiscordBot(commands.Bot):
             description="Discord Interface for https://doomsday-clock-for-archie.vercel.app/",
         )
 
+    async def setup_hook(self):
+        creds = {
+            "type": credentials.FIREBASE_TYPE,
+            "project_id": credentials.FIREBASE_PROJECT_ID,
+            "private_key_id": credentials.FIREBASE_PRIVATE_KEY_ID,
+            "private_key": credentials.FIREBASE_PRIVATE_KEY,
+            "client_email": credentials.FIREBASE_CLIENT_EMAIL,
+            "client_id": credentials.FIREBASE_CLIENT_ID,
+            "auth_uri": credentials.FIREBASE_AUTH_URI,
+            "token_uri": credentials.FIREBASE_TOKEN_URI,
+            "auth_provider_x509_cert_url": credentials.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+            "client_x509_cert_url": credentials.FIREBASE_CLIENT_X509_CERT_URL,
+        }
         (
             firebase_admin.initialize_app(
-                credential=firebase_admin.credentials.Certificate(
-                    {
-                        "type": credentials.FIREBASE_TYPE,
-                        "project_id": credentials.FIREBASE_PROJECT_ID,
-                        "private_key_id": credentials.FIREBASE_PRIVATE_KEY_ID,
-                        "private_key": credentials.FIREBASE_PRIVATE_KEY,
-                        "client_email": credentials.FIREBASE_CLIENT_EMAIL,
-                        "client_id": credentials.FIREBASE_CLIENT_ID,
-                        "auth_uri": credentials.FIREBASE_AUTH_URI,
-                        "token_uri": credentials.FIREBASE_TOKEN_URI,
-                        "auth_provider_x509_cert_url": credentials.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-                        "client_x509_cert_url": credentials.FIREBASE_CLIENT_X509_CERT_URL,
-                    }
-                )
-            )
+                credential=firebase_admin.credentials.Certificate(creds))
             if not len(firebase_admin._apps)
             else firebase_admin.get_app()
         )
 
         self.db = firebase_admin.firestore.client()
 
-    async def setup_hook(self):
         await self.load_extension("src.commands")
 
     async def on_connect(self):
