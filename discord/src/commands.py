@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord import app_commands
 from src.bot import DiscordBot
 from src.embeds import embed_message, embed_all_messages, get_message_user
+from datetime import datetime, timezone
 
 
 def authenticate(inter: discord.Interaction) -> (bool, str, bool):
@@ -59,7 +60,31 @@ class Commands(commands.Cog):
         if not view_allowed:
             return await inter.response.send_message("Hey, Its None of your Business!")
 
-        # TODO: Later
+        now = datetime.now(timezone.utc)
+        timestamp = now.strftime("%Y-%m-%dT%H:%M:%S.") + \
+            f"{now.microsecond // 1000:03d}Z"
+
+        username = ""
+        if str(inter.user.id) == credentials.BRO_ID:
+            username = credentials.BRO_NAME
+        elif str(inter.user.id) == credentials.SIS_ID:
+            username = credentials.SIS_NAME
+
+        message_obj = {
+            "message": message,
+            "time": time,
+            "timestamp": timestamp,
+            "user": username
+        }
+
+        latest_message = self.latest_message_ref.get().to_dict()
+        self.messages_ref.document(
+            latest_message["timestamp"]).set(latest_message)
+        self.latest_message_ref.set(message_obj)
+
+        embed = embed_message(message_obj, inter.user)
+
+        return await inter.response.send_message("Updated Clock!", embed=embed)
 
     @app_commands.command(name="list", description="List the message(s)")
     @app_commands.describe(all="Whether to show the whole List, or only the Latest")
