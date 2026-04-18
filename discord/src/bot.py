@@ -118,6 +118,6 @@ class DiscordBot(commands.Bot):
             return
 
         dm_user = await self.fetch_user(dm_user_id)
-        await dm_user.send(f"Clock updated by {change_user} at {
+        await dm_user.send(f"Clock updated by {change_user} @ {
             format_timestamp(data['timestamp'])}!")
         write_stored_timestamp(data["timestamp"])
