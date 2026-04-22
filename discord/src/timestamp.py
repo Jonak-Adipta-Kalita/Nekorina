@@ -1,7 +1,8 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 TIMESTAMP_FILE = ".timestamp.txt"
+IST = timezone(timedelta(hours=5, minutes=30))
 
 
 def read_stored_timestamp() -> datetime | None:
@@ -25,4 +26,4 @@ def parse_timestamp(timestamp: str) -> datetime:
 
 
 def format_timestamp(timestamp: str) -> str:
-    return parse_timestamp(timestamp).strftime("%B %d, %Y at %I:%M %p")
+    return parse_timestamp(timestamp).astimezone(IST).strftime("%B %d, %Y at %I:%M %p")
