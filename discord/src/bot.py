@@ -51,7 +51,7 @@ class DiscordBot(commands.Bot):
         self.latest_message_ref.on_snapshot(self.on_snapshot)
         await self.on_load_check_change()
 
-        await self.load_extension("src.commands")
+        await self.load_extension("src.commands.doomsday-clock")
 
     async def on_connect(self):
         print("Bot Connected!")

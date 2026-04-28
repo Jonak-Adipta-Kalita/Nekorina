@@ -34,8 +34,10 @@ def authenticate(inter: discord.Interaction) -> (bool, str, bool):
     return view_allowed, name, edit_allowed
 
 
-class Commands(commands.Cog):
+class DoomsDayClock(app_commands.Group, name="clock", description="Commands for the Dooms Day Clock"):
     def __init__(self, bot: DiscordBot):
+        super().__init__()
+
         self.bot = bot
 
         self.messages_ref = self.bot.messages_ref
@@ -62,7 +64,8 @@ class Commands(commands.Cog):
 
         now = datetime.now(timezone.utc)
         timestamp = (
-            now.strftime("%Y-%m-%dT%H:%M:%S.") + f"{now.microsecond // 1000:03d}Z"
+            now.strftime("%Y-%m-%dT%H:%M:%S.") +
+            f"{now.microsecond // 1000:03d}Z"
         )
 
         username = ""
@@ -79,7 +82,8 @@ class Commands(commands.Cog):
         }
 
         latest_message = self.latest_message_ref.get().to_dict()
-        self.messages_ref.document(latest_message["timestamp"]).set(latest_message)
+        self.messages_ref.document(
+            latest_message["timestamp"]).set(latest_message)
         self.latest_message_ref.set(message_obj)
 
         embed = embed_message(message_obj, inter.user)
@@ -127,6 +131,12 @@ class Commands(commands.Cog):
                 return await inter.response.send_message(
                     "There are no messages, go to the website!", ephemeral=hidden
                 )
+
+
+class Commands(commands.Cog):
+    def __init__(self, bot: DiscordBot):
+        self.bot = bot
+        self.bot.tree.add_command(DoomsDayClock(bot))
 
 
 async def setup(bot: DiscordBot):
