@@ -58,20 +58,23 @@ class InteractableCommands(
         view = InteractableView([])
 
         def make_button(cfg: ButtonCfg):
+            if cfg is None:
+                return None
             act = get_act(cfg.name)
-            msg = f"**{user.display_name}** {
-                act[2]} **{inter.user.display_name}**"
 
-            if is_interactable(cfg.name):
-                get_data_ = self.db_interact(cfg.name, inter.user.id)
-                msg += f"\n_{inter.user.display_name} {
-                    act[4]} {get_data_} times_"
+            async def on_press(btn_inter: discord.Interaction) -> str:
+                get_data_ = self.db_interact(cfg.name, btn_inter.user.id)
+                msg = f"**{btn_inter.user.display_name}** {act[2]}"
+                if is_interactable(cfg.name):
+                    msg += f" **{inter.user.display_name}**\n_{
+                        inter.user.display_name} {act[4]} {get_data_} times_"
+                return msg
 
             return buttons(
-                cfg.name, msg, self.neko, act, cfg.emoji, user, cfg.style, view
+                cfg.name, on_press, self.neko, act, cfg.emoji, user, cfg.style, view
             )
 
-        btns = [make_button(cfg) for cfg in buttons_cfg]
+        btns = [make_button(cfg) for cfg in buttons_cfg if cfg is not None]
         for btn in btns:
             view.add_item(btn)
 
@@ -84,8 +87,7 @@ class InteractableCommands(
         ref = self.bot.db.collection("Nekotina").document(str(user_id))
         doc = ref.get()
 
-        new_total = (doc.to_dict() or {}).get(
-            act_name, 0) + 1 if doc.exists else 1
+        new_total = (doc.to_dict() or {}).get(act_name, 0) + 1 if doc.exists else 1
         ref.set({act_name: new_total}, merge=True)
         return new_total
 
