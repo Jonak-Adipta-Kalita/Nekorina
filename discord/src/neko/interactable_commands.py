@@ -58,6 +58,8 @@ class InteractableCommands(
 
         view = InteractableView([])
 
+        # BUG: Remove on_press and let the stupid thing handle it
+
         def make_button(cfg: ButtonCfg):
             act = get_act(cfg.name)
 
@@ -86,8 +88,7 @@ class InteractableCommands(
         ref = self.bot.db.collection("Nekotina").document(str(user_id))
         doc = ref.get()
 
-        new_total = (doc.to_dict() or {}).get(
-            act_name, 0) + 1 if doc.exists else 1
+        new_total = (doc.to_dict() or {}).get(act_name, 0) + 1 if doc.exists else 1
         ref.set({act_name: new_total}, merge=True)
         return new_total
 
@@ -222,7 +223,7 @@ class InteractableCommands(
             "kiss" if not cheeks else "peck",
             user,
             buttons_cfg=[
-                ButtonCfg("Kiss", "💖"),
+                ButtonCfg("Kiss", "💖") if not cheeks else ButtonCfg("Peck", "💖"),
                 random.choice(punish_buttons) if not cheeks else None,
             ],
         )
