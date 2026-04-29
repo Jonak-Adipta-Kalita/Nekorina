@@ -44,7 +44,10 @@ class InteractableView(ui.View):
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
-        await self.message.edit(view=self)
+        try:
+            await self.message.edit(view=self)
+        except Exception:
+            pass
 
 
 def buttons(
@@ -66,13 +69,12 @@ def buttons(
         await inter.response.defer()
 
         view.disable_all()
-        await inter.message.edit(view=view)
+        await inter.edit_original_response(view=view)
 
         data_ = await neko.get_image(act[0])
         await inter.followup.send(embed=act_embed(name, message, data_))
 
-    button = ui.Button(label=name, style=style,
-                       custom_id=name.lower(), emoji=emoji)
+    button = ui.Button(label=name, style=style, custom_id=name.lower(), emoji=emoji)
     button.callback = callback
 
     return button
