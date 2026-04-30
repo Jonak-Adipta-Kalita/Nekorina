@@ -138,7 +138,7 @@ class InteractableCommands(
             inter,
             "blowkiss",
             user,
-            buttons_cfg=[ButtonCfg("Blow Kiss", "💨💋")],
+            buttons_cfg=[ButtonCfg("Blow Kiss", "😘")],
         )
 
     @app_commands.command(name="carry", description="Carry someone")
