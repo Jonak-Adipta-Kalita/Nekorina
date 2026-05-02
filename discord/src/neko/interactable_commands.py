@@ -118,7 +118,7 @@ class InteractableCommands(
             "bite",
             user,
             buttons_cfg=[
-                ButtonCfg("Bite", "🦷"),
+                ButtonCfg("Happy", "😊"),
                 random.choice(punish_buttons),
             ],
         )
