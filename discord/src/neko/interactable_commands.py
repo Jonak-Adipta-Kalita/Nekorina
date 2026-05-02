@@ -54,7 +54,8 @@ class InteractableCommands(
         get_data = self.db_interact(act_data[0], user.id)
 
         message = f"**{inter.user.display_name}** {act_data[2]} **{
-            user.display_name}**\n_{user.display_name} {act_data[4]} {get_data} times_"
+            user.display_name}**"
+        # message += f"\n_{user.display_name} {act_data[4]} {get_data} times_"
 
         view = InteractableView([])
 
@@ -66,13 +67,14 @@ class InteractableCommands(
                 msg = f"**{user.display_name}** {act[2]}"
 
                 if is_interactable(cfg.name):
-                    msg += f" **{inter.user.display_name}**\n_{
-                        inter.user.display_name} {act[4]} {get_data_} times_"
+                    msg += f" **{inter.user.display_name}**"
+                    # msg += f"\n_{inter.user.display_name} {
+                    #     act[4]} {get_data_} times_"
 
                 return msg
 
             return buttons(
-                cfg.name, on_press, self.neko, act, cfg.emoji, user, cfg.style, view
+                cfg.name, on_press, self.neko, act, cfg.emoji, user, cfg.style, view, data
             )
 
         btns = [make_button(cfg) for cfg in buttons_cfg if cfg is not None]
